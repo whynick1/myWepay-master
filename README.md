@@ -1,1 +1,1 @@
-# myWepay-master
+# This is Hongyi's Wepay Work Log Folder.

@@ -1,0 +1,3 @@
+Summary
+
+ref: https://github.com/wepay/kafka-connect-bigquery/issues/53
