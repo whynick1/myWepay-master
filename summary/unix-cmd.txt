@@ -1,4 +1,0 @@
-unix command
-
-Add full DQ checks to DBZ tables
-https://jira.corp.wepay-inc.com/browse/DI-714

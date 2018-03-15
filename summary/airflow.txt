@@ -1,1 +1,18 @@
 Summary
+
+1. Python globals() method return dict of current globals symbol table
+	# Inject the properties into the __dict__ for this module. This will allow
+	# airflow to pick up the DAGs.
+	globals().update(dag_dict)
+
+2. decorator in airflow 
+	Function decorator that Looks for an argument named "default_args", and fills the unspecified arguments from it
+    https://github.com/apache/incubator-airflow/blob/master/airflow/utils/decorators.py#L32-L88
+
+3. use md5hash to distribute runtimes for jobs
+    # value between 0 and 160 which is not intended to be perfectly uniform
+    md5 = hashlib.md5()
+    md5.update(str((cluster, db, table)).encode('utf8'))
+	schedule_interval='{:d} */2 * * *'.format(int(md5.hexdigest(), 16) % 60)
+	ref: https://en.wikipedia.org/wiki/Cron
+

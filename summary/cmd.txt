@@ -1,0 +1,33 @@
+Summary
+
+1. git
+	1) always git pull --rebase before any commit
+		#add remote: git remote add upstream ssh://git@xxx.git
+		git pull --rebase upstream master
+
+	2) squash commit for pull request
+		use 'git reset --soft HEAD~3 && git commit'
+		create branch(under my_fork) for each ticket
+		ref: https://stackoverflow.com/questions/5189560/squash-my-last-x-commits-together-using-git
+
+	3) Cannot push to GitHub cause inconsist commit history
+		git push -f origin <branch> # This can cause the remote repository to lose commits
+		ref: https://stackoverflow.com/questions/10298291/cannot-push-to-github-keeps-saying-need-merge
+
+	4) solve merge conflict
+		'git reset --soft HEAD~3 &&'
+		'git commit'
+		ref: https://stackoverflow.com/questions/5189560/squash-my-last-x-commits-together-using-git
+
+	5) undo git reset
+		use 'git reflog' and 'git reset HEAD@{N}'
+		ref: https://stackoverflow.com/questions/2510276/undoing-git-reset
+
+	6) git stash chages
+		git-stash - Stash the changes in a dirty working directory away
+		https://git-scm.com/docs/git-stash
+
+	7) git rebase is different from pull --rebase
+		it’s easier not to merge in the upstream content and it’s better just to reapply your work on top 
+		of the incoming changes
+		ref: http://gitready.com/advanced/2009/02/11/pull-with-rebase.html
