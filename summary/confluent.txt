@@ -3,15 +3,14 @@ Summary
 1. confluent platform intro
 	ref: https://docs.confluent.io/3.0.0/platform.html
 
-2. Socket error: Address already in use
-	$ lsof -i :<port_num> 
-	$ sudo kill -9 PID
-	ref: https://stackoverflow.com/questions/29217502/socket-error-address-already-in-use/29217540
+2. why do we stream database changes into Kafka
+	The Hardest Part About Microservices: Your Data
+	ref: http://blog.christianposta.com/microservices/the-hardest-part-about-microservices-data/
 
-3. Apache kafka: Failed to acquire lock on file .lock
+3. dpache kafka: Failed to acquire lock on file .lock
 	rm /tmp/kafka-logs/.lock
 
-4. Document for schema registry
+4. document for schema registry
 	ref: https://github.com/confluentinc/schema-registry
 
 5. fetch schema/topic info
@@ -22,3 +21,18 @@ Summary
 6. confluent REST proxy
 	default port: https://docs.confluent.io/current/kafka-rest/docs/config.html 
 	ref: https://github.com/confluentinc/kafka-rest/blob/master/README.md
+
+7. why Avro For Kafka Data
+	direct mapping to and from JSON
+	very compact format, and fast
+	ref: https://www.confluent.io/blog/avro-kafka-data/
+
+8. Socket error: Address already in use
+	$ lsof -i :<port_num> 
+	$ sudo kill -9 PID
+	ref: https://stackoverflow.com/questions/29217502/socket-error-address-already-in-use/29217540
+
+9. what is ZooKepper
+	a centralized service for maintaining configuration information, naming, providing distributed synchronization, and group services
+	used in some form distributed applications
+	ref: https://zookeeper.apache.org

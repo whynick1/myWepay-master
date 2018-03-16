@@ -1,0 +1,15 @@
+Summary
+
+1. what is container? 
+	-- A container image is a lightweight, stand-alone, executable package of a piece of software that includes everything needed to run it: code, runtime, system tools, system libraries, settings
+
+	-- At their heart, are a way to fence an application off from other areas or applications on your servers. 
+
+	-- etc. Docker container
+
+2. why we need container?
+	-- A developer can create, test, and build an app all in a container
+
+	-- More portable, that simply hand the container over to other engineering or container management platform
+
+	-- Allow team work better together
