@@ -1,0 +1,33 @@
+Summary
+
+1. IntelliJ hotkey
+	1) naviagate to declaration/usage: ⌘ + B
+	
+	2) go back/forward: ⌘ + [/]
+
+	3) open setting: ⌘ + ,
+	
+	4) open terminal: ⌘ + t
+
+	5) look up code origin in in project strucuture: click earth button on left top
+
+	6) search for class: ⌘ + N
+
+	7) auto-generate getter/setter/toString/constructor: ctr + N
+
+	8) run/debug: ⌘ + shift + R/D
+
+
+2. IntelliJ push steps
+
+	1) update project
+
+ 	2) bottom menu/Version Control: check Local Changes, 
+
+	3) confusing change: show diff
+
+	4) remove non-intentional change: revert 
+
+	5) right click -> git -> commit file -> put comment
+
+	6) commit and push

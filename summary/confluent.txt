@@ -5,6 +5,8 @@ Summary
 
 2. why do we stream database changes into Kafka
 	The Hardest Part About Microservices: Your Data
+	between transaction boundaries and between bounded contexts, use events to communicate consistency
+	Events are immutable structures that capture an interesting point in time that should be broadcast to peers
 	ref: http://blog.christianposta.com/microservices/the-hardest-part-about-microservices-data/
 
 3. dpache kafka: Failed to acquire lock on file .lock
@@ -13,7 +15,7 @@ Summary
 4. document for schema registry
 	ref: https://github.com/confluentinc/schema-registry
 
-5. fetch schema/topic info
+5. fetch schema/topic info with confluent
 	curl http://localhost:8081/subjects
 	curl http://localhost:8082/topics 
 	ref: https://github.com/confluentinc/schema-registry/blob/master/README.md
@@ -28,11 +30,18 @@ Summary
 	ref: https://www.confluent.io/blog/avro-kafka-data/
 
 8. Socket error: Address already in use
-	$ lsof -i :<port_num> 
+	$ sudo lsof -i :<port_num> 
 	$ sudo kill -9 PID
 	ref: https://stackoverflow.com/questions/29217502/socket-error-address-already-in-use/29217540
 
 9. what is ZooKepper
-	a centralized service for maintaining configuration information, naming, providing distributed synchronization, and group services
+	a centralized service for maintaining confihguration information, naming, providing distributed synchronization, and group services
 	used in some form distributed applications
 	ref: https://zookeeper.apache.org
+
+10.how to use Avro Serialization
+	ref: http://debezium.io/docs/tutorial/
+	ref: http://debezium.io/docs/configuration/avro/
+
+11. Kafka cheat-sheet (without confluent)
+	http://ronnieroller.com/kafka/cheat-sheet

@@ -1,2 +1,50 @@
 Summary
 
+1. How to run debzium locally(without docker)
+	1) better play debzium with docker first
+		ref: http://debezium.io/docs/tutorial/#monitor-mysql
+
+	2) clone debezium github rep, build with "mvn clean install -DskipITs"
+		ref: https://github.com/debezium/debezium
+
+	3) add debezium-connector-mysql/target/debezium-core-0.8.0-SNAPSHOT.jar to $CLASSPATH 
+		with "export CLASSPATH=$CLASSPATH:/Users/hongyiw/dev/debezium/debezium-core/bin/mysql-binlog-connector-java-0.13.0.jar"
+		ref: https://stackoverflow.com/questions/1675765/adding-to-the-classpath-on-osx/11304846#11304846
+
+	4) download then add mysql-binlog-connector-java-0.13.0.jar & mysql-connector-java-5.1.34.jar to $CLASSPATH
+
+	5) create quickstart folder under /debezium-connector-mysql, "cd quickstart"
+		add connector.sh (copyfrom kcbq-connector/quickstart)
+		add properties/connector.properties and properties/standalone.properties
+
+	6) config kafka connector
+		config kafka connect to use Avro 
+		ref: http://debezium.io/docs/configuration/avro/
+
+		ref: http://debezium.io/docs/tutorial/#monitor-mysql
+		ref: https://docs.confluent.io/current/connect/userguide.html#configuring-workers
+		ref: https://bitbucket.devops.wepay-inc.com/projects/DEVTOOLS/repos/infrastructure/browse/roles/connect-distributed/templates/deb_monolith.j2
+
+	7) install plugins
+		add plugin.path=PATH_TO_CONNECTOR_JAR
+		ref: https://docs.confluent.io/current/connect/userguide.html#installing-plugins
+
+	8) start zookeeper, kafka, schema-registry and lastly connector.sh(through /debezium-connector-mysql/quickstart)
+		use the script from /confluent or /kcbq/quickstart 
+
+	9) Error: Cannot read the binlog filename and position via 'SHOW MASTER STATUS'.
+		copy the debezium-connector-mysql/src/test/docker/server/my.cnf binlog config to local mysql my.cnf
+
+	10) check topic existence with kafka/bin/kafka-topics (contains topic: dbserver.DB_NAME.TABLE_NAME)
+		./bin/kafka-topics.sh --list --zookeeper localhost:2181
+
+	11) test with confluent/bin/kafka-avro-console-consumer (tail lasted change event)
+		$ ./bin/kafka-avro-console-consumer --topic NAME_OF_TOPIC \
+	         --zookeeper localhost:2181 \
+	         --from-beginning
+
+
+2. Exploring Docker container/image's file system
+	docker exec -it name-of-container bash
+	docker run --rm -it --entrypoint=/bin/bash name-of-image
+	ref: https://stackoverflow.com/questions/20813486/exploring-docker-containers-file-system

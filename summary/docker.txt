@@ -13,3 +13,264 @@ Summary
 	-- More portable, that simply hand the container over to other engineering or container management platform
 
 	-- Allow team work better together
+
+3. Docker High Level Concept
+	1) Docker is an application delivery technology
+		-- used to build, deploy, and run containers for software applications
+
+		-- Package Once, Deploy Anywhere
+
+	2) Capabilities
+		-- build an application using Docker image
+
+		-- ship an application using Docker Hub
+
+		-- run the application as a Docker container
+
+		-- avoid a single point of failure
+
+	3) Workflow
+
+		(1) "CLIENT" makes a request to run a "DOCKER CONTAINER"
+
+	 	(2) Docker "Host" download image from "DOCKER HUB" if don't have, then run the container
+	 		--both client and host are stateless
+
+
+4. Command
+	1) Basic command 
+		(1) docker version
+
+		(2) docker info
+
+		(3) docker run hello-world
+
+		(4) docker image ls
+
+		(5) docker container ls
+
+		(6) docker --help
+
+	2) create & run container
+		(1) docker-machine create -d virtualbox myhost
+
+		(2) docker-machine status/start myhost/stop myhost
+
+		(3) docker container run -it jboss/wildfly 
+			-- auot download image if don't have
+			-- run in interactive foreground model
+			-- stoped by Ctrl + C
+
+		(4) docker container run -d --name web jboss/wildfly
+			-- detached model without print-out
+			-- check status use: docker container ls (list alive container)
+			-- allow self-defined container NAMES
+			-- stoped by: docker container stop [NAMES]
+
+		(5) docker container ls -a
+			-- list all previous containers (include stoped ones)
+
+		(6) docker container -f rm [NAMES]
+			-- -f means stop first
+			-- remove from list
+
+		(7) docker container run -it jboss/wildfly bash
+			-- override default command of container (with bash command line) 
+			-- -it is requried2
+
+		(8) docker container run -d --name web -P jboss/wildfly
+			-- -p/-P expose the port to :32768
+			-- have wildfly up and run
+			-- try chrome browser -> http://192.168.99.100:32768/
+			-- 192.168.99.100 retrived by: docker-machine ip
+
+		(9) docker container run -d --name web -p [port_name]:[port_num] jboss/wildfly
+			-- change/define port: etc. -p 8080:8080
+
+		(10) docker container logs [NAMES]
+			-- check container startup logs
+
+		(11) docker container run -d --name web -p 8080:8080 -v 'pwd'/webapp.war:/opt/jboss/wildfly/standalone/deployments/webapp.war jboss/wildfly
+			-- deploy war file to docker wildfly container
+			-- volume mapping: mount local directory as a point in container
+			-- check endpoint: curl http://192.168.99.100:32770/webapp/resources/persons
+	
+	3) create docker image
+		(1) Dockerfile Instructions (reference: https://docs.docker.com/engine/reference/builder/)
+			-- FROM: set the Base Image for subsequent instructions
+				-- form: FROM <image>:<tag>
+				-- a valid Dockerfile must have FROM as its first instruction. 
+
+			-- RUN: use to install or update software package
+				-- form: RUN <command> 
+
+			-- CMD: default for executing container 
+				-- form: CMD command param1 param2
+				-- only 1 CMD instruction in a Dockerfile
+				-- If you list more than one CMD then only the last CMD will take effect
+				-- CMD should be used as a way of defining default arguments for an ENTRYPOINT command 
+
+			-- EXPOSE: network port on which container is listening
+				-- form: EXPOSE <port> [<port>...]
+
+			-- ENV: sets the environment variable <key> to the value <value>
+				-- form: ENV <key> <value>
+
+			-- ADD: copies new files, directories or remote file URLs from <src> and adds them to the filesystem of the image at the path <dest>.
+				-- form: ADD <src>... <dest>
+
+			-- COPY: copies new files or directories from <src> and adds them to the filesystem of the container at the path <dest>.
+				-- form: COPY <src>... <dest>
+
+			-- ENTRYPOINT: allows you to configure a container that will run as an executable
+				-- form: ENTRYPOINT ["executable", "param1", "param2"]
+				-- Dockerfile should specify at least one of CMD or ENTRYPOINT commands
+				-- ENTRYPOINT should be defined when using the container as an executable
+
+			-- VOLUME: create a mount point with specific name
+				-- form: VOLUME ["/data"]
+				-- use mount to keep 'stateless'
+
+			-- ARG: defines a variable that users can pass at build-time to the builder with the docker build command using the --build-arg <varname>=<value> flag
+				-- form: ARG <name>[=<default value>]
+				-- may optionally specify a default value for an ARG instruction
+
+			-- USER: set user name or UID when running image
+
+			-- HEALTHCHECK: perform health check on application inside container
+
+		(2) basic java docker image
+			-- create new directory and Dockerfile (instructions within define what will be packaged)
+			-- vi Dockerfile
+				-- FROM openjdk:jdk-alpine
+				-- CMD java -version
+ 			-- Build image: docker image build -t helloworld[tag] (default to 'latest'; optional)
+ 				-- docker image build -t helloworld: jdk-alpine
+			-- history of image: docker image history helloworld
+			-- Run container: docker container run helloworld: jdk-alpine
+				-- openjdk image & tag-version from hub.docker.com
+
+		(3) copy file into docker image
+			-- copy new file/directory into container filesystem
+				-- FROM jboss/wildfly
+				-- COPY webapp.war /opt/jboss/wildfly/standalone/deployments/webapp.war
+					-- eliminate 'CMD' because it exist in parent Dockerfile(wildfly)
+			-- docker image build -t helloweb
+			-- docker container run -p 8080:8080 -d helloweb
+			-- Access application: curl http://localhost:8080/webapp/resources/persons
+
+		(4) run JAR files from the Docker image
+			-- before, we just add war file to 'wildfly container'
+			-- now , we add own jar to docker image without application server(jboss/wildfly)
+				-- FROM openjdk:jdk-alpine
+				-- COPY myapp/target/myapp-1.0-SNAPSHOT.jar /deployments/
+				-- CMD java -jar /deployments/myapp-1.0-SNAPSHOT.jar
+			-- Create JAR file: `mvn -f myapp/pom.xml clean package
+			-- Build image: `docker image build -t hellojava:3
+			-- Run container: `docker container run hellojava:3
+
+		(5) package a maven project to docker image
+			-- use Docker maven plugin
+			-- reference: https://docs.docker.com/engine/reference/builder/
+
+		(6) tags and share docker images
+			-- remove all images: docker image rm -f $(docker image ls -qa)
+
+			-- remove all container: docker container rm -f $(docker container ls -aq)`
+
+			-- build image with no name or tag: docker image build .
+				-- show tag is <none>
+			
+			-- build image with just name
+				-- latest tag is created
+
+			-- build image with name and explicit tag: docker image build -t helloworld:1 .
+
+			-- latest is not really latest, it's latest only when you ta it to be latest
+
+			-- Tag v2 to 'latest': docker image tag helloworld:2 helloworld:latest
+
+
+	4) Deploy a registry server
+		(1) Push image to Docker Hub
+			-- tag image first: docker image tag helloworld:2 arungupta/helloworld:latest`
+				-- Push the image without namespace lead to error
+
+			-- Login to Docker: `docker login`
+
+			-- Push to Docker Hub: `docker image push arungupta/helloworld:latest`
+
+		(2) Push to local registry
+			-- Run registry: `docker container run -d -p 5000:5000 --restart always --name registry registry:2.6.0`
+	
+			-- Tag image for local registry: `docker image tag helloworld:latest localhost:5000/arungupta/helloworld:latest`
+
+			-- Push to local registry: `docker image push localhost:5000/arungupta/helloworld:latest`
+
+			-- Pull from local registry: `docker image pull localhost:5000/arungupta/helloworld:latest`
+
+		(3) reference: https://docs.docker.com/registry/deploying/
+
+
+5. Docker Compose
+	1) Concept
+		-- Compose is a tool for defining and running multi-container Docker applications.
+
+	2) Create multi-container app
+		(1) Create directory: travel
+
+		(2) vi docker-compose.yml
+
+		-----------------------------------------------
+		version: '3'
+		services:
+		  web:
+		    image: arungupta/couchbase-javaee:travel
+		    environment:
+		      - COUCHBASE_URI=db
+		    ports:
+		      - 8080:8080
+		      - 9990:9990
+		    depends_on:
+		      - db
+		  db:
+		    image: arungupta/couchbase:travel
+		    ports:
+		      - 8091:8091
+		      - 8092:8092
+		      - 8093:8093
+		      - 11210:11210
+		-----------------------------------------------
+
+		(3) Two images `web` and `db`
+		
+		(4) Start application: `docker-compose up -d`
+
+		(5) Show logs: `docker-compose logs -f`
+
+		(6) Access application: `curl http://localhost:8080/airlines/resources/airline`
+
+
+		(7) Shutdown application: `docker-compose down`
+
+		(8) Project rename: `docker-compose -p myapp up -d`
+			-- By default, service names is <project-name>_<service-name>_<service-number>
+
+		(9) Default Override: `docker-compose.override.yml`:
+
+
+6. Docker Clustering
+	1) Swarm node
+		(1) Show options: `docker swarm --help`
+		
+		(2) Single node swarm: `docker swarm init`
+		    -- use `--advertise-addr 192.168.99.100` to specify the address advertised to other nodes
+		    
+		(3) Show information: `docker info`
+
+		(4) Leave swarm: `docker swarm leave` and `docker swarm leadve -f`
+
+
+7. Reference
+	1) Dock install
+		-- https://docs.docker.com/toolbox/toolbox_install_windows/#looking-for-troubleshooting-help
