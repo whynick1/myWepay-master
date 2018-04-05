@@ -20,3 +20,17 @@ Summary
 	schedule_interval='{:d} */2 * * *'.format(int(md5.hexdigest(), 16) % 60)
 	ref: https://en.wikipedia.org/wiki/Cron
 
+5. airflow command
+	ref: https://airflow.apache.org/cli.html
+
+6. setup py3 env for airflow
+	only use python 3.6 for venv3 with help from pyenv
+	https://stackoverflow.com/a/32672975
+
+7. try to delete apache_airflow.egg-info if exception throw 
+	pkg_resources.ResolutionError: Script 'scripts/airflow' not found in metadata 
+	at '/Users/hongyiw/dev/airflow/apache_airflow.egg-info'
+	
+8. error open airflow UI while swtich between PY2 & PY3
+	solve by clear brower cookie, as PY2 and PY3 code store in cookie are different
+	

@@ -12,13 +12,14 @@ Summary
 3. dpache kafka: Failed to acquire lock on file .lock
 	rm /tmp/kafka-logs/.lock
 
-4. document for schema registry
-	ref: https://github.com/confluentinc/schema-registry
-
-5. fetch schema/topic info with confluent
+4. list schema/topic with confluent
 	curl http://localhost:8081/subjects
 	curl http://localhost:8082/topics 
 	ref: https://github.com/confluentinc/schema-registry/blob/master/README.md
+
+5. fetch schema detail under subject "xxx"
+	curl -X GET http://localhost:8081/subjects/xxx/versions/1
+	ref: https://github.com/confluentinc/schema-registry
 
 6. confluent REST proxy
 	default port: https://docs.confluent.io/current/kafka-rest/docs/config.html 

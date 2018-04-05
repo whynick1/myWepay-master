@@ -2,4 +2,22 @@ Summary
 
 1. bigquery standard sql functions 
 	ref: https://cloud.google.com/bigquery/docs/reference/standard-sql/functions-and-operators
+
+2. bigquery API Reference
+	ref: https://cloud.google.com/bigquery/docs/reference/rest/v2/
 	
+3. manange BQ view with tool: scripts-manager
+	ref: https://bitbucket.devops.wepay-inc.com/projects/DI/repos/scripts/browse
+	must login to generate credential first: gcloud auth application-default login
+	ref: https://github.com/GoogleCloudPlatform/google-cloud-python/blob/master/docs/core/auth.rst
+	
+4. table decorators in Legacy SQL
+	https://cloud.google.com/bigquery/table-decorators
+
+5. Partitioned table provided by BQ 
+	There are 2 ways to represent partitioned table:
+		1) use table suffix to distinguish date
+			_PARTITIONTIME BETWEEN TIMESTAMP(DATE_ADD(CURRENT_DATE(), INTERVAL -1 DAY)) AND CURRENT_TIMESTAMP();
+		2) collapse tables into one but add field `_PARTITIONTIME`
+			PARSE_DATE('%Y_%m_%d', _TABLE_SUFFIX) >= DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY);
+	ref: https://cloud.google.com/bigquery/docs/partitioned-tables

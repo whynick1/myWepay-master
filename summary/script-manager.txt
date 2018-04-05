@@ -1,0 +1,14 @@
+Summary
+
+1. view replica support ticket guide:
+	1) create virtual env for script mananger
+	2) install required package
+	3) run generate cmd (only support dbz table, o/w manually add view config in view.json)
+	4) run push cmd
+	5) verity views on BQ
+	6) git push change (usually just view.json)
+
+2. supported view operation
+	1) create new supported
+	2) update supported (always override)
+	3) delete not supported (have to manually delete)

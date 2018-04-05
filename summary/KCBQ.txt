@@ -1,24 +1,10 @@
 Summary
 
-1. How to run kbbq locally
+1. How to run kcbq locally
 	1) clone and fork kcbq repository then follow instruction below
 		ref: https://github.com/wepay/kafka-connect-bigquery
 
 	2) update standalone.properties
-		name=dbz-mysql-connector
-		connector.class=io.debezium.connector.mysql.MySqlConnector
-		tasks.max=1
-		database.hostname: localhost
-		database.port: 3306
-		database.user: root
-		database.password: 128517
-		database.server.id: 184055
-		database.server.name: dbserver2
-		database.whitelist: library
-		database.history.kafka.bootstrap.servers: localhost:9092
-		database.history.kafka.topic: schema-changes.book
-
-	3) update connector.properties
 		bootstrap.servers=localhost:9092
 		key.converter=io.confluent.connect.avro.AvroConverter
 		key.converter.schema.registry.url=http://localhost:8081
@@ -28,8 +14,35 @@ Summary
 		internal.value.converter=org.apache.kafka.connect.json.JsonConverter
 		internal.key.converter.schemas.enable=false
 		internal.value.converter.schemas.enable=false
-		offset.storage.file.filename=/tmp/connect.offsets
-		plugin.path=/Users/hongyiw/dev/debezium/debezium-connector-mysql/quickstart/bin
+		offset.storage.file.filename=/tmp/connect2.offsets
+		rest.port = 8084
+
+	3) update connector.properties
+		name=bigquery-connector
+		connector.class=com.wepay.kafka.connect.bigquery.BigQuerySinkConnector
+		tasks.max=1
+
+		topics=dbserver2.library.book
+		sanitizeTopics=true
+
+		autoCreateTables=true
+		autoUpdateSchemas=true
+
+		schemaRetriever=com.wepay.kafka.connect.bigquery.schemaregistry.schemaretriever.SchemaRegistrySchemaRetriever
+		schemaRegistryLocation=http://localhost:8081
+
+		bufferSize=100000
+		maxWriteSize=10000
+		tableWriteWait=1000
+
+		########################################### Fill me in! ###########################################
+		# The name of the BigQuery project to write to
+		project=unique-acronym-194321
+		# The name of the BigQuery dataset to write to (leave the '.*=' at the beginning, enter your
+		# dataset after it)
+		datasets=.*=library
+		# The location of a BigQuery service account JSON key file
+		keyfile=/Users/hongyiw/dev/airflow-dags/hongyi-airflow-demo-keyfile.json
 
 	4) If you run multiple standalone instances on the same host, some settings must differ between each instance
 		1) offset.storage.file.filename: storage for connector offsets, which are stored on the local filesystem in standalone mode
@@ -37,3 +50,14 @@ Summary
 		2) rest.port: the port the REST interface listens on for HTTP requests
 
 	5) ./connector.sh should load data to bigquery
+
+2. how to run integration test for KCBQ
+	follow the instructions: https://github.com/wepay/kafka-connect-bigquery#integration-testing-the-connector
+	pay attention to:
+		1) have docker running 
+		2) put file 'test.conf' by 'integrationtest.sh' side  
+		3) put file 'test.properties' by 'BigQueryConnectorIntegrationTest.java' side
+		4) 'test.conf' is the same as 'test.properties' as follow
+			project=unique-acronym-194321
+			dataset=library
+			keyfile=/Users/hongyiw/dev/airflow-dags/hongyi-airflow-demo-keyfile.json

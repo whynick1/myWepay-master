@@ -13,3 +13,16 @@ Summary
 4. when & why to use generator
 	make solution clearer, and avoid building huge lists of results
 	ref: https://stackoverflow.com/questions/102535/what-can-you-use-python-generator-functions-for
+
+5. unit testing framework
+	ref: https://docs.python.org/3/library/unittest.html
+
+6. mock
+	ref: https://docs.python.org/3/library/unittest.mock.html#unittest.mock.MagicMock
+
+7. automated Python 2 to 3 code translation
+	Using 2to3
+	ref: https://docs.python.org/3/library/2to3.html
+	
+8. solving PY3 `byte` type not support by json.dump by extending JSONEncoder
+	https://docs.python.org/2/library/json.html
