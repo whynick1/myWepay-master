@@ -1,6 +1,6 @@
 Summary
 
-1. git
+1. git command
 	1) how to push in a clear way (when changes do not deserve a separate branch)
 		add remote with: git remote add upstream ssh://git@xxx.git
 		before any commit:
@@ -33,8 +33,3 @@ Summary
 		it’s easier not to merge in the upstream content and it’s better just to reapply your work on top 
 		of the incoming changes
 		ref: http://gitready.com/advanced/2009/02/11/pull-with-rebase.html
-
-2. curl
-	1) -X <request>
-	specify all sorts of GET, HEAD, POST and PUT requests 
-	ref: https://curl.haxx.se/docs/manpage.html

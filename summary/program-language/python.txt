@@ -26,3 +26,24 @@ Summary
 	
 8. solving PY3 `byte` type not support by json.dump by extending JSONEncoder
 	https://docs.python.org/2/library/json.html
+
+9. encoding & decoding
+	1) UTF-8
+	text encoding - encoding text as binary data
+	variable length encoding, 1-4 bytes per code point
+
+	2) ASCII
+	encoded as ASCII using 1 byte
+	defines 128 characters, which map to the numbers 0–127
+
+	3) Base64
+	byte encoding - encoding arbitrary binary data as ASCII text
+
+	4) Unicode
+	a superset of ASCII, and the numbers 0–128 have the same meaning in ASCII as they have in Unicode
+	unicode characters don't generally fit into one 8-bit byte, there are numerous ways of storing Unicode characters in byte sequences, such as UTF-32 and UTF-8
+
+	5) BQ immported BYTES data must be base64-encoded
+		encode byte(py3) and str(py2) with base64
+		ref: https://gist.github.com/ajdavis/5735965
+		ref: https://cryptii.com/binary-to-base64

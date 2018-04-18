@@ -49,7 +49,10 @@ Summary
 		
 		2) rest.port: the port the REST interface listens on for HTTP requests
 
-	5) ./connector.sh should load data to bigquery
+	5) Installing Connector Plugins by adding .jar to CLASSPATH
+		ref: https://docs.confluent.io/3.1.1/connect/userguide.html#installing-connector-plugins
+
+	6) ./connector.sh should load data to bigquery
 
 2. how to run integration test for KCBQ
 	follow the instructions: https://github.com/wepay/kafka-connect-bigquery#integration-testing-the-connector

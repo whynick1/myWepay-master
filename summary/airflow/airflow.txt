@@ -34,3 +34,5 @@ Summary
 8. error open airflow UI while swtich between PY2 & PY3
 	solve by clear brower cookie, as PY2 and PY3 code store in cookie are different
 	
+9. run "flake8 airflow tests" before raise pull request
+	https://github.com/apache/incubator-airflow/blob/master/CONTRIBUTING.md

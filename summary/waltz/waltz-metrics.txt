@@ -1,0 +1,23 @@
+Summary
+
+1. dropwizard-metrics
+	1) base metrics components
+		ref: http://metrics.dropwizard.io/4.0.0/getting-started.html
+		ref: http://wuchong.me/blog/2015/08/01/getting-started-with-metrics/
+
+	2) design architecture
+
+
+2. JmxReporter
+
+3. statsDReporter
+	1) open source 3rd party statsDReporter
+		ref: https://github.com/ReadyTalk/metrics-statsd
+
+	2) test statsDReporter
+		edit exampleConfig.js, to use console:  
+		{
+		  port: 8125
+		, backends: [ "./backends/console" ]
+		}
+		ref: https://github.com/etsy/statsd
