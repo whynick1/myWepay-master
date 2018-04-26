@@ -33,6 +33,16 @@ Summary
 	
 8. error open airflow UI while swtich between PY2 & PY3
 	solve by clear brower cookie, as PY2 and PY3 code store in cookie are different
-	
-9. run "flake8 airflow tests" before raise pull request
-	https://github.com/apache/incubator-airflow/blob/master/CONTRIBUTING.md
+
+9. jinja templating is not rendered until execution
+	ref: http://jinja.pocoo.org/docs/2.10/api/
+
+10. how to get keyfile google cloud connection
+	1) airflow will use `gcloud auth` user to connnect, if no key file is defined
+
+	2) create keyfile.json from 'correct' service account under 'correct' project
+		ref: https://console.cloud.google.com/iam-admin/serviceaccounts/project?project=mythic-crane-708
+
+	3) how to know which service account to use
+		select 'role' from menu, will see the 'right' service account after expend role
+		ref: https://console.cloud.google.com/iam-admin/iam?project=mythic-crane-708

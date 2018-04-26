@@ -21,6 +21,8 @@ Summary
 		(1) implicitly use null/None/new Collection<>() to indicate return "empty"
 		(2) consider pass whole object rather than just its property in case of future change
 
+	6) run "flake8 airflow tests" before raise pull request
+		ref: https://github.com/apache/incubator-airflow/blob/master/CONTRIBUTING.md
 
 2. use Markdown in github
 	ref: https://help.github.com/articles/basic-writing-and-formatting-syntax

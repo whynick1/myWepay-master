@@ -6,9 +6,61 @@ Summary
 		ref: http://wuchong.me/blog/2015/08/01/getting-started-with-metrics/
 
 	2) design architecture
-
+		Clock.java	
+			An abstraction for how time passes. It is passed to Timer to track timing.
+		ConsoleReporter.java		
+			A reporter which outputs measurements to a {@link PrintStream}, like {@code System.out}.
+		Counter.java		
+			An incrementing and decrementing counter metric.
+		Counting.java 	
+			An interface for metric types which have counts.
+		EWMA.java	
+			An exponentially-weighted moving average.
+		ExponentiallyDecayingReservoir.java		
+			An exponentially-decaying random reservoir. 
+			While SlidingTimeWindowReservoir is easier to understand than ExponentiallyDecayingReservoir, it is not bounded in size, so using it to sample a high-frequency process can require a significant amount of memory. Because it records every measurement, it’s also the slowest reservoir type.
+			ref: https://metrics.dropwizard.io/3.1.0/manual/core/
+		Gauge.java	
+			A gauge metric is an instantaneous reading of a particular value.
+		Meter.java	
+			A meter metric which measures mean throughput and one-, five-, and fifteen-minute exponentially-weighted moving average throughputs.
+		Metered.java 	
+			An object which maintains mean and exponentially-weighted rate.
+		Metric.java	
+			A tag interface to indicate that a class is a metric.
+		MetricAttribute.java		
+			Represents attributes of metrics which can be reported.
+		MetricFilter.java	
+			A filter used to determine whether or not a metric should be reported, among other things.
+		MetricRegistry.java		
+			A registry of metric instances.
+			we want dynamically add metric to a reporter, then listener registry is required.
+			by customizing the way to notify listeners in case of metric add/remove, we can easy manange multiple reporter on same metrics cluster
+		MetricRegistryListener.java		
+			Listeners for events from the registry.  Listeners must be thread-safe.
+		MetricSet.java	
+			A set of named metrics.
+		Reporter.java	
+			A tag interface to indicate that a class is a Reporter.
+		Reservoir.java	
+			A statistically representative reservoir of a data stream.
+		Sampling.java	 
+			An object which samples values (from reservior).
+		ScheduledReporter.java	
+			The abstract base class for all scheduled reporters (i.e., reporters which process a registry's metrics periodically).
+		SlidingTimeWindowReservoir.java 	
+			A statistical snapshot of a {@link UniformSnapshot}.
+		Snapshot.java	
+			A statistical snapshot of a {@link Snapshot}.
+		Timer.java		
+			A timer metric which aggregates timing durations and provides duration statistics, plus throughput statistics via {@link Meter}.
+		UniformSnapshot.java	
+			A statistical snapshot of a {@link UniformSnapshot}.
+		WeightedSnapshot.java	
+			A statistical snapshot of a {@link WeightedSnapshot}.
 
 2. JmxReporter
+	1) monitor with VisualVM
 
 3. statsDReporter
 	1) open source 3rd party statsDReporter
@@ -21,3 +73,13 @@ Summary
 		, backends: [ "./backends/console" ]
 		}
 		ref: https://github.com/etsy/statsd
+
+4. Other design
+	in case most of time, we want default behavior of an abstract method, we can 
+		1). have a subclass implementing method
+		2). use a static method to return an instance of subclass
+		3). how to use: my_clock = Clock.defaultClock()
+
+	in case most of time, we want default behavior of an interface, we can 
+		1). have a instance of itself implementing method with lambda express (MetricFilter ALL = (name, metric) -> true;)
+		2). how to use: my_filter = MetricFilter.ALL
