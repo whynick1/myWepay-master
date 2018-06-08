@@ -47,3 +47,5 @@ Summary
 		encode byte(py3) and str(py2) with base64
 		ref: https://gist.github.com/ajdavis/5735965
 		ref: https://cryptii.com/binary-to-base64
+
+10. To make import walk through your directories every directory must have a __init__.py file

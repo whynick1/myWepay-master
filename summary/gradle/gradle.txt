@@ -1,0 +1,37 @@
+Summary
+
+1. CI/CD (Continuous integration and continuous delivery)
+    1) push project to artifactory
+        (1) create gradle project & teamcity project with Slingshot
+            ref: https://slingshot.devops.wepay-inc.com/project
+
+        (2) handle artifact release version
+            `deploy_version` gets generated based on the tag `release_type` specified in the PR description
+            example: release_type: major|minor|patch (choose just one)
+            ref: https://confluence.corp.wepay-inc.com/display/DevOps/Docker+-+Service+Artifact+Labeling
+
+    2) libs-release-local-secure VS libs-release-local VS libs-release
+        (1) `libs-release-local` for developers testing (should not be included by other services)
+        
+        (2) `libs-release-local-secure` is defined to store artifacts built on master in secure build system.
+        
+        (3) both accessible with a virtual repo `libs-release`
+
+        (4) when create TeamCity project with Slingshot, "extra" publish repo will be added to `artifactoryPublish`
+            -- extra publish repos: ibs-release-local for DevBuild; libs-release-local-secure for MasterBuild
+            -- in build.gradle, leave `repoKey = 'libs-release'`(consistent with gradle project generated with Slingshot)
+                ref: https://aut-teamcity.devops.wepay-inc.com/admin/editRunType.html?id=buildType:DataInfra_Riff_Dev_Build_Push_Library_to_artifactory&runnerId=RUNNER_542
+                ref: https://aut-teamcity.devops.wepay-inc.com/admin/editRunType.html?id=buildType:DataInfra_Riff_Master_Build_Push_Library_to_artifactory&runnerId=RUNNER_538
+
+
+2. gradlew vs gradle
+    1) ./gradlew is a gradle wrapper that facilitates installation of gradle
+        
+    2) without which you would have to manually install gradle
+    
+    3)./gradlew is more convenient and version consistent across machines
+
+
+3. suppress checkstyle/findbugs warning
+    ref: https://stackoverflow.com/questions/4023185/how-to-disable-a-particular-checkstyle-rule-for-a-particular-line-of-code
+    ref: https://stackoverflow.com/questions/1829904/is-there-a-way-to-ignore-a-single-findbugs-warning

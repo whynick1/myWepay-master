@@ -1,8 +1,7 @@
 Summary
 
-1. as we have realtime system, why batch system is needed
-	to beat the CAP theorem
-	http://nathanmarz.com/blog/how-to-beat-the-cap-theorem.html
+1. as we have realtime system, why batch system is needed to beat the CAP theorem
+	ref: http://nathanmarz.com/blog/how-to-beat-the-cap-theorem.html
 
 2. Python globals() method return dict of current globals symbol table
 	# Inject the properties into the __dict__ for this module. This will allow

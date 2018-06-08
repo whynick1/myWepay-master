@@ -1,0 +1,12 @@
+Summary
+
+1. what is graph database
+	A graph database is a database management system with CRUD operations working on a graph data model
+	ref: https://en.wikipedia.org/wiki/Graph_database
+
+2. why choose a graph database
+	to leverage data relationships
+	ref: http://radar.oreilly.com/2013/07/why-choose-a-graph-database.html
+
+3. advantages of graph database
+	ref: https://neo4j.com/why-graph-databases

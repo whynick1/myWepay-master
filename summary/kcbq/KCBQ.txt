@@ -66,6 +66,7 @@ Summary
 			keyfile=/Users/hongyiw/dev/airflow-dags/hongyi-airflow-demo-keyfile.json
 
 3. how to release with Sonatype
+	brew switch gnupg 1.4.22
 	ref: https://github.com/wepay/kafka-connect-bigquery/wiki/Publishing-with-Sonatype
 	ref: http://central.sonatype.org/pages/ossrh-guide.html
 	ref: http://central.sonatype.org/pages/requirements.html
@@ -74,6 +75,3 @@ Summary
 	ref: https://medium.com/@xiaoxiaohou/gpg-keyserver-receive-failed-no-route-to-host-9e47a0dd83f8
 	ref: https://oss.sonatype.org/#nexus-search;quick~kcbq
 	ref: https://mvnrepository.com/artifact/com.wepay.kcbq
-
-	brew switch gnupg 1.4.22
-

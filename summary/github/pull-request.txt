@@ -1,28 +1,50 @@
 Summary
 
 1. pull request guide
-	1). review your own pr like never read it before 
+	1) review your own pr like never read it before 
 		(1) not just focus on critical logic
 		(2) be careful about coding style and intent
 		(3) read with naive mind, add necessary commment if hard to understand
 
-	2). how to add comment
+	2) how to add comment
 		(1) use @link/@see when necessary
 
-	3). how to add log
+	3) how to add log
 		(1) add log at entry point, not inside process block
 		(2) consider use logger.debug/warn rather than info in specific case
 
-	4). unit test
+	4) unit test
 		(1) be careful when adding @Before; instead use a helper method to init objects
 		(2) use ArgumentCaptor to capture argument values for further assertions
 
-	5). coding style issue
+	5) coding style issue
 		(1) implicitly use null/None/new Collection<>() to indicate return "empty"
 		(2) consider pass whole object rather than just its property in case of future change
 
 	6) run "flake8 airflow tests" before raise pull request
 		ref: https://github.com/apache/incubator-airflow/blob/master/CONTRIBUTING.md
 
-2. use Markdown in github
+	7) when modified folder/file name/path
+		(1) search all file under same repo, in case this folder/file is linked by other files
+
+	8) create a new interface(or split) if don't want to implement all method
+		(1) implement interface with dummy function is confusing
+
+	9) public final VS getter
+		(1) If a class is only used by a restricted number of classes, use package local or public fields
+		(2)If a class expect other modules/developers to use, following a getter/setter model
+
+
+2. coding style
+	1) when assume user will provoid a list/dict/str in some format, do necessary check
+		(1) how far to go? it's an art
+		(2) only handle the part you assume, etc. key in dict
+
+	2) when writing config json file, always perfer "redundent" style
+		(1) use 'kind': { 'name': "food" }, than { 'kind': 'food' }
+		(2) use [{},{}] than {{},{}} in parallel relationship
+
+
+3. use Markdown in github
 	ref: https://help.github.com/articles/basic-writing-and-formatting-syntax
+

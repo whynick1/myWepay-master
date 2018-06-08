@@ -1,4 +1,0 @@
-Summary
-
-ref: https://jira.corp.wepay-inc.com/browse/DI-714
-ref: https://issues.apache.org/jira/browse/AIRFLOW-2169
