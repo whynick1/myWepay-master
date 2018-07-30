@@ -1,0 +1,218 @@
+Summary
+
+1. what problem to solve?
+	WePay's core payments team is responsible for maintaining two different sets of data when it comes to payments:
+		1) Money movements (track in the monolith's disbursement_history table)
+
+		2) Account balances (calculated by running a query against that table)
+
+	However, we want to seperate ledger from downstream use case, for couple of reasons:
+	    * not highly scalable. 
+	        It's in MySQL, and not easy to partition.
+
+	    * not highly available
+	        so a Google region outage takes out our whole transaction log.
+
+	    * hard to alter
+	        disbursement_history receives a lot of reads and writes.
+
+	    * hard to ETL
+	        the table is also fairly large (20G-50G range)
+
+	    * account balance calculations slow
+	        since they're not materialized.
+
+	    * require a full history of transactions
+	        for some queries, so we can't truncate data.
+
+	    * not append-only
+	        (it receivers updates), which makes it impossible in some cases to determine intermediate changes.
+
+
+2. What is Waltz?
+	1) Waltz is a distributed/replicated write­ahead log. 
+
+	2) It helps a micro­service architecture to perform reliable/consistent transactions in a distributed environment.
+
+	3)source of truth in a large distributed system. 
+
+
+3. Typical Usage
+	1) A micro­service creates a transaction data from a request from outside world and its current state (database state). 
+
+	2) Then the micro­service sends it to Waltz before updating its database. 
+
+	3) Once the transaction is persisted in Waltz, the micro­service can safely updates its database. 
+
+
+4. What else it provide?
+	1) easy recovery
+		When a micro­service failed, it recovers its state from the Waltz log. 
+		
+	2) shared log
+		Log can be produced consistently and independently.
+
+		Log can be consumed by other services to produce derived data such as a summary data and a report.
+
+		resilient to faults 
+
+	3) concurrency control
+		with optimistic locking
+		
+		preventing two or more micro­service instances from 
+
+		writing inconsistent transaction data into the log.
+
+	4) partitioned
+		provides higher read/write throughput
+		
+		partitioning scheme is customizable by applications.
+
+	5) replicated
+		Waltz uses a quorum write system. 
+
+		all transaction data are replicated to multiple places.
+
+		as long as more than half of replicas are up, Waltz is available and guarantees consistency of data. 
+
+		replicas may be placed in different data centers for disaster resilience.
+
+
+5. Waltz basic components
+    ● Waltz Client: 
+        A client code that runs in an application. It discovers Waltz servers to communicate through Zookeeper. Multiple clients can write to the same log concurrently.
+
+    ● Waltz Server: 
+        A server that works as a proxy to Waltz storages and also is responsible for concurrency control.
+
+    ● Waltz Storage: 
+        A storage server that provides persistency of data. It stores transaction data in its local disk.
+
+    ● Transaction ID: 
+        In a partition, each committed transaction is assign with an unique ID
+
+    ● Transaction Data: 
+        Transaction data are just byte arrays. Opaque to Waltz. An application must provide a serialization method to Waltz Client.
+
+    ● High­water Mark: 
+        A high­water mark is the highest transaction ID seen. For a Waltz server it is the ID of the most recently committed transaction. For a client, it is the ID of the most recently consumed transaction.
+
+    ● Lock ID: 
+        A partition scoped id for optimistic locking. The scope of a lock ID is limited to the partition. Talk more later.
+
+    ● Waltz Client Callbacks: 
+        An application code that Waltz client invoke to communicate with the application.
+
+    ● Transaction Context: 
+        A client application code that packages the logic to generate a transaction. The code may be executed multiple times until the transaction succeeds, or the transaction context decides to give up.
+
+    ● Zookeeper: 
+        We use Zookeeper to monitor participating servers. We also store some cluster wide configuration parameters (the number of partitions, the number of replicas) and metadata of storage state.
+
+
+6. client-sever communication
+
+	1) client: 
+		submit transactions constantly and return control (internally, send Append Requests)
+
+	2) server: 
+		An append request is immediately place in the append request queue in the append task object. The thread of the append task polls a request from the queue and tries to acquire locks if the append request contains any lock request. 
+
+		If locking fails, the task sends a lock failure message to the client. 
+	
+		If there is no lock failure, the transaction information is passed to the corresponding store partition.
+
+	client:
+        If txn reject, retry in retryQueue until accept (use updated client high-water mark)
+       
+        If txn accept, receive FEED_DATA Message, 
+       		send TRANSACTION_DATA_REQUEST in applyTransaction() callback
+       		receive TRANSACTION_DATA_RESPONSE
+       		persist transaction data
+
+
+7. Optimistic locking in detail
+	1) optimistic locking improves performance
+		pessimistic locking: a resource is locked from the time it is first accessed in a transaction until the transaction is finished
+            
+        optimistic locking allow concurrent access, but verifies that there is no other transaction has modified the same resource during commit
+            
+	2) probabilistic approach
+		usually an optimistic locking is done by versioning records
+
+		but expensive to keep such data structure
+
+		Waltz uses a probabilistic approach, similar to Bloom Filter
+
+
+8. Quorum write
+	1) Waltz use quorum to guarantee persistence and consistency. 
+	
+	2) Master-master VS Master-slave
+		Advantage: 
+       		no single point of failure, easy recovery
+				in master-slave, when master die, we try to promote one of the slaves, no guarantee slave finished replication of old master. 
+				
+				but with quorum write, a writer does not decide whether or not the write is committed, but it merely observe the commit is established by quorum.
+				
+				as long as more than half of replicas are up, Waltz is available and guarantees consistency of data. 
+		
+       		less latency
+       			slaves are always catching up with some latency
+		Disadvantage:
+    		loosely consistent, i.e. lazy and asynchronous
+       		conflict resolution to handle
+
+
+
+9. Session
+	1) Why we need to establish a session?
+		to guarantee that no two servers write to the same partition at the same time. 
+
+    2) How to achieve?
+		(1) when a server starts a new session, it acquires a new session ID (we use Zookeeper), and attaches the session ID to all messages to storage nodes. 
+
+		(2) storage nodes compare the session ID of the message with their current session ID. 
+
+		(3) if the session ID of the message is greater than the ones they have, they take the session ID of the message as the most recent session ID and reject any message with lower session ids from then on. 
+
+		(4) because we have monotonically increasing session IDs, it is guarantee that no two servers write to the same partition at the same time. 
+
+	3) When to establish a session?
+		whenever a storage node becomes unavailable, Waltz server creates a new session and runs the recovery. 
+
+		also, Waltz server start a new session periodically,  to avoid task queue get too long. 
+
+
+10. Connections
+	1) Waltz client creates two connections per server. One is for streaming, and the other for RPC.
+
+	2) Why stream-based communication?
+		for fault tolerance
+			with RPC, once a client restart, we don't know if transactions are persisted in Waltz.
+	
+			however, with Stream, client just need to provide its current high­water mark, then Waltz server will stream all transactions to the application after the high­water mark.
+
+	3) Why rpc-based communication?
+		sending all transaction data to all application server instances is wasteful. 
+
+		To address this issue we employ lazy loading of transaction data. (load on demand)
+
+
+11. QA
+	Q1: for multi-clients scenario, is applyTransaction() callback process sequentially? 
+	
+	A1: yes for each partition
+
+	Q2: why have design that all clients update db for all transaction, rather than P2P?
+	
+	A2: If a transaction can be applied only by the client who submitted the transaction, the system freezes until the client comes back. By allowing any client to process transactions, the system can continue working even when the failed client never comes back.
+
+	Q3: client A will receive callback from transaction submit by client B. is there any security concern?
+	
+	A3: By design clients can read all transactions as long as it can connect to waltz server. The security is controlled by SSL certificates. To keep the application database consistent, all clients must have access to all transactions.
+
+	Q4: follow up of Q2, as mutiple clients try to update high water mark on callback, could it be there any overhead on waltz client?
+	
+	A4: If they share the DB, updates should be coordinated by DB so that there won't be duplicated processing.  
+

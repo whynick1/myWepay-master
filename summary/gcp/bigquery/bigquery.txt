@@ -21,3 +21,8 @@ Summary
 		2) collapse tables into one but add field `_PARTITIONTIME`
 			PARSE_DATE('%Y_%m_%d', _TABLE_SUFFIX) >= DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY);
 	ref: https://cloud.google.com/bigquery/docs/partitioned-tables
+
+6. Permission management
+	1) Authorize view to accesss table
+
+	2) Grant account access through di-portal

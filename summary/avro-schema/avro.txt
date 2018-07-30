@@ -1,0 +1,30 @@
+Summary
+
+1. introduction
+	ref: https://avro.apache.org/docs/1.8.1/spec.html
+	
+
+2. schema evolution
+	must follow schema evolution unless no consumer is consuming that event
+	ref: https://docs.oracle.com/cd/NOSQL/html/GettingStartedGuide/schemaevolution.html#schemaevolutionhow
+
+
+3. avro-schema repo
+	1) Conduct backwards and forward compatibility checks on all schemas
+	2) Merge and flatten all schemas into a full-avsc directory
+	ref: https://confluence.corp.wepay-inc.com/display/DI/Avro+Schemas
+
+
+4. managing schemaless data in avro
+	ref: https://confluence.corp.wepay-inc.com/display/DI/Managing+schemaless+data+in+Avro
+
+
+5. running env
+	use python3.5 (3.5 tested, other env unknown)
+
+
+6. running nosetest
+	before commit, need to run tests
+	1) `python3 setup.py build`
+	2) `python3 nosetests`
+

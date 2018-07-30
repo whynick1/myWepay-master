@@ -3,14 +3,17 @@ Summary
 1. as we have realtime system, why batch system is needed to beat the CAP theorem
 	ref: http://nathanmarz.com/blog/how-to-beat-the-cap-theorem.html
 
+
 2. Python globals() method return dict of current globals symbol table
 	# Inject the properties into the __dict__ for this module. This will allow
 	# airflow to pick up the DAGs.
 	globals().update(dag_dict)
 
+
 3. decorator in airflow 
 	Function decorator that Looks for an argument named "default_args", and fills the unspecified arguments from it
     https://github.com/apache/incubator-airflow/blob/master/airflow/utils/decorators.py#L32-L88
+
 
 4. use md5hash to distribute runtimes for jobs
     # value between 0 and 160 which is not intended to be perfectly uniform
@@ -19,22 +22,28 @@ Summary
 	schedule_interval='{:d} */2 * * *'.format(int(md5.hexdigest(), 16) % 60)
 	ref: https://en.wikipedia.org/wiki/Cron
 
+
 5. airflow command
 	ref: https://airflow.apache.org/cli.html
+
 
 6. setup py3 env for airflow
 	only use python 3.6 for venv3 with help from pyenv
 	https://stackoverflow.com/a/32672975
 
+
 7. try to delete apache_airflow.egg-info if exception throw 
 	pkg_resources.ResolutionError: Script 'scripts/airflow' not found in metadata 
 	at '/Users/hongyiw/dev/airflow/apache_airflow.egg-info'
-	
+
+
 8. error open airflow UI while swtich between PY2 & PY3
 	solve by clear brower cookie, as PY2 and PY3 code store in cookie are different
 
+
 9. jinja templating is not rendered until execution
 	ref: http://jinja.pocoo.org/docs/2.10/api/
+
 
 10. how to get keyfile google cloud connection
 	1) airflow will use `gcloud auth` user to connnect, if no key file is defined
@@ -45,3 +54,81 @@ Summary
 	3) how to know which service account to use
 		select 'role' from menu, will see the 'right' service account after expend role
 		ref: https://console.cloud.google.com/iam-admin/iam?project=mythic-crane-708
+
+
+11. backfill & catchup
+	1) start_date vs execution_date
+		start date decide first execution date, and next execution date is decicded base on interval
+
+	2) during backfill or catchup == true, catch up will start from first missing run since first execution date (would not change even start_date updated)
+
+	3) catchup could be set either dag level, or configuration file level
+
+	4) once catchup is turned on, all (limit to max_active_run) missing run will be scheduled in parallel and run in sequence
+
+
+12. how elt partion load works
+	1) to load big table, for each dag run (execution date), we only load rows within timestamp range (based on 'modify_time'); thus, we are expected to use catchup
+
+	2) usually, we will do an incremental load every 15 minutes, and daily load that overwrites the entire day’s worth of data. (by setting "write_disposition = 'WRITE_APPEND'/'WRITE_TRUNCATE' in GCS_TO_BQ_OPERATOR)
+
+	3) 15 m load will look back for 15m, actually load rows in 30m, thus lead to need for decuplication
+
+
+13. how corrupt dag works
+	1) according to "12", rows with "modify_time == null" will never be load until "modify_time is ready" (out of partition load range), this bring out the use of corrupt dag
+
+	2) this is usally okay, but there is such case that people want to see "corrupt rows" in BQ
+
+	3) corrupt dag will instead keep loading "corrupt rows" to a seperate "corrput DB table" by its own frequnency
+
+	4) then, people query view can see both "good" and "corrupt" tuples, because views created through el.py are combination of "original BQ table" & "corrput DB table"
+
+
+14. row count check mismatch potential causes
+	1) inconsistency in mysql
+
+	2) deletions in mysql
+
+	3) de-dupe logic is wrong
+
+
+15. airflow-dag repo structure
+	1) elt: all elt pipeline from mysql to micro_bus
+		https://elt-airflow.corp.wepay-inc.com
+
+	2) dev: has access to GCS & BQ, but can't write data to production
+		https://dev-airflow.corp.wepay-inc.com
+
+	3) atomic_sled: house internal staging data
+		https://tst-airflow-di.devops.wepay-inc.com
+
+	4) silver_castle: house external staging data
+		https://stg-airflow-di.devops.wepay-inc.com
+
+	5) mythic_crane: house POC data
+		https://poc-airflow-di.devops.wepay-inc.com
+
+	6) platinum_fortress: currently only dbz pipeline
+		https://prd-npci-airflow-di.wepay-inc.com
+
+	7)mythic-crane => liquid-champion (poc)
+		atomic-sled => exalted-entry (tst)
+		silver-castle => macro-gadget (stg)
+		platinum-fortress => micro-bus (prd)
+
+
+16. airflow oncall
+	1) too much scheduled tasks
+		check maximum pool size
+
+	2). tasks status always null
+		(1) airflow GCS logging is not properly configured
+			in kibana: airflow.utils.log.gcs_task_handler.GCSTaskHandler gcs_write - Could not write logs to gs://atomic-sled-797-airflow-di-logs/db_monolith_wepay_users_partition_1d/<span class="highlight">db2gcs_wepay.users</span>/2011-08-24T04:00:00/1.log
+
+		(2) email is not configured properly:
+			ValueError: invalid literal for int() with base 10
+
+		(3) cannot import xxx
+			add dependency to CLASSPATH, or cherry-pick the new commit (hook/operator)
+

@@ -18,8 +18,7 @@ Summary
 		(2) use ArgumentCaptor to capture argument values for further assertions
 
 	5) coding style issue
-		(1) implicitly use null/None/new Collection<>() to indicate return "empty"
-		(2) consider pass whole object rather than just its property in case of future change
+		(1) see following.
 
 	6) run "flake8 airflow tests" before raise pull request
 		ref: https://github.com/apache/incubator-airflow/blob/master/CONTRIBUTING.md
@@ -32,7 +31,7 @@ Summary
 
 	9) public final VS getter
 		(1) If a class is only used by a restricted number of classes, use package local or public fields
-		(2)If a class expect other modules/developers to use, following a getter/setter model
+		(2) If a class expect other modules/developers to use, following a getter/setter model
 
 
 2. coding style
@@ -43,6 +42,28 @@ Summary
 	2) when writing config json file, always perfer "redundent" style
 		(1) use 'kind': { 'name': "food" }, than { 'kind': 'food' }
 		(2) use [{},{}] than {{},{}} in parallel relationship
+
+	3) implicitly use null/None/new Collection<>() to indicate return "empty"
+		
+	4) consider pass whole object rather than just its property in case of future change
+
+	5) class and important methods always require javadoc
+
+	6) use final as possible as you can, especillay for class variables
+
+	7) cast with "double" rather than "double MILLISECONDS_IN_SECOND = 1000.0;"
+
+	8) always check input parameters (etc. non-negative, str-length), and make sure failure messages are clear
+
+	9) always use constant for special numbers
+
+	10) when write CLI tool, always make usage message clear
+		(1) example: java -cp waltz-uber-*.jar com.wepay...ProducerPerformanceCli <full_path_config_file> [--txnPerThread] [--txnSize] [<options>...]";
+
+	11) be careful about race condition when multiple thread used
+		(1) use conccurent class/method, etc. ConcurrentMap/CountDownLatch.compareAndSet(...)
+
+		(2) synchronized methods and synchronized statements/block: synchronized(this) {}
 
 
 3. use Markdown in github
