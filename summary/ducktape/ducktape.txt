@@ -1,0 +1,5 @@
+Summary
+
+1. Resource
+	ref: https://github.com/confluentinc/ducktape/wiki
+	ref: https://github.com/apache/kafka/tree/trunk/tests/kafkatest/tests/core

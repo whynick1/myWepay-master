@@ -1,0 +1,6 @@
+Summary
+
+1. Resource
+	ref: https://github.com/mitchellh/vagrant-google
+	ref: https://www.vagrantup.com/docs/vagrantfile
+

@@ -184,7 +184,31 @@ Summary
 		also, Waltz server start a new session periodically,  to avoid task queue get too long. 
 
 
-10. Connections
+10. Recovery Procedure
+	1) Recovery happens when
+		(1) StoreSession close
+			
+		(2) ReplicaSessionTask init
+
+		(3) ReplicaConnectionFactory close
+			
+	2) Procedure from ReplicaConnectionFactory close
+		-> (3) ReplicaConnectionFactory.close() 
+		-> storeSessionManager.close() 
+		-> (1) StoreSession.close() 
+		-> session == null 
+		-> storeSessionManager.createSession() 
+		-> repliaSessionManager.getReplicaSession() 
+		-> new ReplicaSession(connectionFactories.get(ReplicaId)) 
+		-> session.open() 
+		-> new ReplicaSession.RplicaSessionTask() 
+		-> (2) ReplicaSessionTask.init() 
+		-> replicaSession.initialize() 
+		-> recoveryManager.start() 
+		-> loadPartitionMetadata()
+
+
+11. Connections
 	1) Waltz client creates two connections per server. One is for streaming, and the other for RPC.
 
 	2) Why stream-based communication?
@@ -199,7 +223,7 @@ Summary
 		To address this issue we employ lazy loading of transaction data. (load on demand)
 
 
-11. QA
+12. QA
 	Q1: for multi-clients scenario, is applyTransaction() callback process sequentially? 
 	
 	A1: yes for each partition

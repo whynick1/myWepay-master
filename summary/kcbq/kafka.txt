@@ -1,0 +1,9 @@
+Summary
+
+1. kafka
+	ref: https://github.com/apache/kafka
+
+
+2. confluent
+	ref: https://www.confluent.io/product/confluent-platform/
+

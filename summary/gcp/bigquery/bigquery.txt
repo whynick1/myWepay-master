@@ -3,18 +3,39 @@ Summary
 1. bigquery standard sql functions 
 	ref: https://cloud.google.com/bigquery/docs/reference/standard-sql/functions-and-operators
 
+
 2. bigquery API Reference
 	ref: https://cloud.google.com/bigquery/docs/reference/rest/v2/
+
+
+3. Database VS Data Warehouse
+	1) Database
+		-- Used for Online Transactional Processing (OLTP) but can be used for other purposes such as Data Warehousing. This records the data from the user for history.
+		-- The tables and joins are complex since they are normalized (for RDMS). This is done to reduce redundant data and to save storage space.
+		-- Entity – Relational modeling techniques are used for RDMS database design.
+		-- Optimized for write operation.
+		-- Performance is low for analysis queries.
 	
-3. manange BQ view with tool: scripts-manager
+	2) Data Warehouse
+		-- Used for Online Analytical Processing (OLAP). This reads the historical data for the Users for business decisions.
+		-- The Tables and joins are simple since they are de-normalized. This is done to reduce the response time for analytical queries.
+		-- Data – Modeling techniques are used for the Data Warehouse design.
+		-- Optimized for read operations.
+		-- High performance for analytical queries.
+		-- Is usually a Database.
+
+
+4. manange BQ view with tool: scripts-manager
 	ref: https://bitbucket.devops.wepay-inc.com/projects/DI/repos/scripts/browse
 	must login to generate credential first: gcloud auth application-default login
 	ref: https://github.com/GoogleCloudPlatform/google-cloud-python/blob/master/docs/core/auth.rst
-	
-4. table decorators in Legacy SQL
+
+
+5. table decorators in Legacy SQL
 	https://cloud.google.com/bigquery/table-decorators
 
-5. Partitioned table provided by BQ 
+
+6. Partitioned table provided by BQ 
 	There are 2 ways to represent partitioned table:
 		1) use table suffix to distinguish date
 			_PARTITIONTIME BETWEEN TIMESTAMP(DATE_ADD(CURRENT_DATE(), INTERVAL -1 DAY)) AND CURRENT_TIMESTAMP();
@@ -22,7 +43,28 @@ Summary
 			PARSE_DATE('%Y_%m_%d', _TABLE_SUFFIX) >= DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY);
 	ref: https://cloud.google.com/bigquery/docs/partitioned-tables
 
-6. Permission management
+
+7. Permission management
 	1) Authorize view to accesss table
 
 	2) Grant account access through di-portal
+
+
+8. Changing Table Schemas
+	1) BigQuery natively supports the following schema modifications:
+		(1) Adding columns to a schema definition
+		(2) Relaxing a column's mode from REQUIRED to NULLABLE
+
+	2) All other schema modifications are unsupported and require manual workarounds, including:
+		(1) Changing a column's name
+		(2) Changing a column's data type
+		(3) Changing a column's mode (aside from relaxing REQUIRED columns to NULLABLE)
+		(4) Deleting a column
+
+	3) Adding column is much easier
+		(1) you can add columns to an existing table's schema, when you append data to a table using a load or query job
+		(2) whereas updating column type requires override whole table
+	
+	4) ref: https://cloud.google.com/bigquery/docs/managing-table-schemas
+	   ref: https://cloud.google.com/bigquery/docs/manually-changing-schemas#changing_a_columns_data_type
+

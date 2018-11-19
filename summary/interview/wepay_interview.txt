@@ -1,0 +1,11 @@
+Summary
+
+1. Software engineer interviewing expectations
+	ref: https://confluence.corp.wepay-inc.com/display/EN/Software+engineer+interviewing+expectations
+
+2. Technical Phone Screens and Interviews
+	ref: https://confluence.corp.wepay-inc.com/display/EN/Technical+Phone+Screens+and+Interviews
+
+3. Interview Questions
+	ref: https://confluence.corp.wepay-inc.com/display/EN/Interview+Questions
+

@@ -19,12 +19,37 @@ Summary
 	ref: https://confluence.corp.wepay-inc.com/display/DI/Managing+schemaless+data+in+Avro
 
 
-5. running env
+5. Backward compatibility VS Forward compatibility
+	1) A new schema is backward compatible if it can be used to read the data written in all previous schemas. 
+		- Backward compatibility is useful for loading data into systems like Hadoop since one can always query data of all versions using the latest schema.
+
+	2) A new schema is forward compatible if all previous schemas can read data written in this schema. 
+		- Forward compatibility is useful for consumer applications that can only deal with data in a particular version that may not always be the latest version.
+
+	3) Full compatibility: A new schema is fully compatible if it’s both backward and forward compatible.
+
+
+6. running env
 	use python3.5 (3.5 tested, other env unknown)
 
 
-6. running nosetest
+7. running nosetest
 	before commit, need to run tests
 	1) `python3 setup.py build`
 	2) `python3 nosetests`
+
+
+8. embedded json string
+	1) location: avro/com/wepay/events/EmbeddedRbitsV3Event.avsc
+
+	2) The process of adding new Risk Bit
+		(1) there is a chunk of data that external platforms give us to help us with our modeling
+
+		(2) this schema is defined in “embeddedRbitsJSON”
+
+		(3) every time there’s a new RBit that we decide to start supporting on the front end (send by partner), the JSON will get that data as part of the frontend change
+
+		(4) to support new Rbit, API team add a new field of [null, some_type] to the Rbit.avsc 
+
+		(5) EmbeddedRbitsV3Event record with field "embeddedRbits" (Array of V3 Rbits), now may contains new Rbit
 

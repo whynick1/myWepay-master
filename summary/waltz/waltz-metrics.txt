@@ -1,6 +1,9 @@
 Summary
 
-1. dropwizard-metrics
+1. metrics naming conventions
+	ref: https://confluence.corp.wepay-inc.com/login.action?os_destination=%2Fpages%2Fviewpage.action%3FspaceKey%3DDevOps%26title%3DMetrics%2BNaming%2BConventions&permissionViolation=true
+
+2. dropwizard-metrics
 	1) base metrics components
 		ref: http://metrics.dropwizard.io/4.0.0/getting-started.html
 		ref: http://wuchong.me/blog/2015/08/01/getting-started-with-metrics/
@@ -59,10 +62,10 @@ Summary
 		WeightedSnapshot.java	
 			A statistical snapshot of a {@link WeightedSnapshot}.
 
-2. JmxReporter
+3. JmxReporter
 	1) monitor with VisualVM
 
-3. statsDReporter
+4. statsDReporter
 	1) open source 3rd party statsDReporter
 		ref: https://github.com/ReadyTalk/metrics-statsd
 
@@ -74,7 +77,7 @@ Summary
 		}
 		ref: https://github.com/etsy/statsd
 
-4. Other design
+5. Other design
 	in case most of time, we want default behavior of an abstract method, we can 
 		1). have a subclass implementing method
 		2). use a static method to return an instance of subclass

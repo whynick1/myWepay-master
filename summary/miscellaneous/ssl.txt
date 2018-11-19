@@ -1,0 +1,52 @@
+Summary
+
+1. What is SSL?
+	1) SSL (Secure Sockets Layer)
+	2) standard security protocol for establishing encrypted links between a web server and a client
+
+
+2. What is SSL/TLS Certificate?
+	1) SSL or TLS (Transport Layer Security) certificates are data files that bind a cryptographic key to the details of an organization
+	2) When SSL/TLS certificate is installed on a web server, it enables a secure connection between the web server and the client that connects to it
+	3) The server's URL is prefixed with "https" instead of "http" 
+
+
+3. When to use SSL?
+	1) The SSL protocol is used by millions of online business to protect their customers, ensuring their online transactions remain confidential. 
+	2) A web page should use encryption when it expects users to submit confidential data, including personal information, passwords, or credit card details
+
+
+4. How does SSL work?
+	1) An end-user asks their browser to make a secure connection to a website (e.g.https://www.example.com)
+	2) The browser obtains the IP address of the site from a DNS server then requests a secure connection to the website.
+	3) To initiate this secure connection, the browser requests that the server identifies itself by sending a copy of its SSL certificate to the browser.
+	4) The browser checks the certificate to ensure:
+		-- That it is signed by a trusted CA
+		-- That it is valid - that it has not expired or been revoked
+		-- That it confirms to required security standards on key lengths and other items.
+		-- That the domain listed on the certificate matches the domain that was requested by the user.
+	5) When the browser confirms that the website can be trusted, it creates a symmetric session key which it encrypts with the public key in the website's certificate. The session key is then sent to the web server.
+	6) The web server uses its private key to decrypt the symmetric session key.
+	7) The server sends back an acknowledgement that is encrypted with the session key.
+	8) From now on, all data transmitted between the server and the browser is encrypted and secure.
+
+
+5. How to specify the certificate to use for authenticating the server to client?
+	1) SSL properties are set at the JVM level via system properties. Meaning you can either set them when you run the program (java -D....) Or you can set them in code by doing System.setProperty.
+		-- System.setProperty("javax.net.ssl.trustStore",path_to_your_cacerts_file);
+
+
+6. The specific keys to set
+	1) javax.net.ssl.keyStore
+		-- Location of the Java keystore file containing an application process's own certificate and private key. 
+
+	2) javax.net.ssl.keyStorePassword
+		-- Password to access the private key from the keystore file specified by javax.net.ssl.keyStore. 
+		-- This password is used twice: To unlock the keystore file (store password), and To decrypt the private key stored in the keystore (key password).
+
+	3) javax.net.ssl.trustStore
+		-- Location of the Java keystore file containing the collection of CA certificates trusted by this application process (trust store). On Windows, the specified pathname must use forward slashes, /, in place of backslashes, \.
+
+	4) javax.net.ssl.trustStorePassword
+		-- Password to unlock the keystore file (store password) specified by javax.net.ssl.trustStore.
+

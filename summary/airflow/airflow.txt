@@ -112,17 +112,32 @@ Summary
 	6) platinum_fortress: currently only dbz pipeline
 		https://prd-npci-airflow-di.wepay-inc.com
 
-	7)mythic-crane => liquid-champion (poc)
-		atomic-sled => exalted-entry (tst)
-		silver-castle => macro-gadget (stg)
-		platinum-fortress => micro-bus (prd)
+	7) mythic-crane => liquid-champion (poc)
+	   atomic-sled => exalted-entry (tst)
+	   silver-castle => macro-gadget (stg)
+	   platinum-fortress => micro-bus (prd)
 
 
-16. airflow oncall
+16. airflow delayed load jobs
+	After enabling SLA, we are experiencing SLA misses. Some learnings:
+	1) The parallelism is honored
+	
+	2) SQLAlchemy pool size is not the current bottleneck
+	
+	3) The scheduler loop itself is pretty quick, ~30s, this is because the dag file processing is done asynchronously
+	
+	4) The el.py contains more than 100 dags and takes ~5m to process. For a dag with N tasks, it will take (N x processing time per iteration) to complete a dagrun. This makes it not possible for 15m load jobs to catch up once they fell behind.
+	
+	5) The max_thread config does not help with this situation because the parallelism is DAG file based, not dag based.
+	
+	6) The solution is to separate el.py into individual dag files, one file per dag
+
+
+17. airflow oncall
 	1) too much scheduled tasks
 		check maximum pool size
 
-	2). tasks status always null
+	2) tasks status always null
 		(1) airflow GCS logging is not properly configured
 			in kibana: airflow.utils.log.gcs_task_handler.GCSTaskHandler gcs_write - Could not write logs to gs://atomic-sled-797-airflow-di-logs/db_monolith_wepay_users_partition_1d/<span class="highlight">db2gcs_wepay.users</span>/2011-08-24T04:00:00/1.log
 
@@ -131,4 +146,14 @@ Summary
 
 		(3) cannot import xxx
 			add dependency to CLASSPATH, or cherry-pick the new commit (hook/operator)
+
+	3) monolith db view is generated automatically, for micro-service ones, have to do it manually
+	
+	4) for any new table added to elt-airflow, we need to create a Devops Jira ticket, to request for select access
+		ref: https://jira.corp.wepay-inc.com/browse/DEVOPS-7831
+
+18. airflow 10
+	1) we added timezone support (edited)
+
+	2) and datetime are changed to timestamp
 

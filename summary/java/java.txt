@@ -2,28 +2,45 @@ Summary
 
 1. Prefer collect from returned call and print; than pass down variable to call stack
 
+
 2. when need to pass obvious redundent param, instead create a wrapper class to hold the attributes (encasulated, inmutatble, thread-safe)
 
+
 3. use constructor as "::new" for functional interface (with exactly one abstract method)
+
 
 4. when expose private object to public, it is likely we want to other class to modify it, there are 2 things we can do:
 	1) highly important: use a getter method to return a copy of that object
 	2) less imporant: return real object, then declare the field in calling class with "final"
 
-5. 
-793
-down vote
-accepted
-There are actually many good reasons to consider using accessors rather than directly exposing fields of a class - beyond just the argument of encapsulation and making future changes easier.
 
-Here are the some of the reasons I am aware of:
+5. For class implementing redundent method (should never be called) from interface, always throw UnsupportedOperationException
 
-Encapsulation of behavior associated with getting or setting the property - this allows additional functionality (like validation) to be added more easily later.
-Hiding the internal representation of the property while exposing a property using an alternative representation.
-Insulating your public interface from change - allowing the public interface to remain constant while the implementation changes without affecting existing consumers.
-Controlling the lifetime and memory management (disposal) semantics of the property - particularly important in non-managed memory environments (like C++ or Objective-C).
-Providing a debugging interception point for when a property changes at runtime - debugging when and where a property changed to a particular value can be quite difficult without this in some languages.
-Improved interoperability with libraries that are designed to operate against property getter/setters - Mocking, Serialization, and WPF come to mind.
-Allowing inheritors to change the semantics of how the property behaves and is exposed by overriding the getter/setter methods.
-Allowing the getter/setter to be passed around as lambda expressions rather than values.
-Getters and setters can allow different access levels - for example the get may be public, but the set could be protected.
+
+6. public field VS getter
+	1) Encapsulation of behavior associated with getting or setting the property
+		-- allows additional functionality (like validation) to be added more easily later
+
+	2) Hiding the internal representation of the property
+
+	3) Insulating your public interface from change
+		-- in case we want to return a copy/unmofified copy
+
+	4) Providing a debugging interception point for when a property changes at runtime
+
+	5) Allowing inheritors to change the semantics of how the property behaves and is exposed by overriding the getter/setter methods
+
+
+7. The correct order of modifiers is:
+	1) public
+	2) protected
+	3) private
+	4) abstract
+	5) default
+	6) static
+	7) final
+	8) transient
+	9) volatile
+	10) synchronized
+	11) native
+	12) strictfp

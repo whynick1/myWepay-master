@@ -54,6 +54,7 @@ Summary
 
 	6) ./connector.sh should load data to bigquery
 
+
 2. how to run integration test for KCBQ
 	follow the instructions: https://github.com/wepay/kafka-connect-bigquery#integration-testing-the-connector
 	pay attention to:
@@ -65,6 +66,7 @@ Summary
 			dataset=library
 			keyfile=/Users/hongyiw/dev/airflow-dags/hongyi-airflow-demo-keyfile.json
 
+
 3. how to release with Sonatype
 	brew switch gnupg 1.4.22
 	ref: https://github.com/wepay/kafka-connect-bigquery/wiki/Publishing-with-Sonatype
@@ -75,3 +77,4 @@ Summary
 	ref: https://medium.com/@xiaoxiaohou/gpg-keyserver-receive-failed-no-route-to-host-9e47a0dd83f8
 	ref: https://oss.sonatype.org/#nexus-search;quick~kcbq
 	ref: https://mvnrepository.com/artifact/com.wepay.kcbq
+
