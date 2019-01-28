@@ -3,3 +3,12 @@ Summary
 1. Resource
 	ref: https://github.com/confluentinc/ducktape/wiki
 	ref: https://github.com/apache/kafka/tree/trunk/tests/kafkatest/tests/core
+
+2. Fix bug in @cluster decorator #207
+	ref: https://github.com/confluentinc/ducktape/pull/207
+
+3. Allow adding additional disks to GCE instance #210
+	ref: https://github.com/mitchellh/vagrant-google/pull/210
+
+4. Support node type based allocation #205
+	ref: https://github.com/confluentinc/ducktape/pull/205

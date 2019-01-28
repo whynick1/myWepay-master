@@ -240,3 +240,17 @@ Summary
 	
 	A4: If they share the DB, updates should be coordinated by DB so that there won't be duplicated processing.  
 
+	Q5: how did server register themselves?
+  	
+  	A5: WaltzServer extends ManangedServer, and call `clusterManager.manage()` in its constructor. When a WaltzServer is up, `onconnected()` invoked, Znode updated. And a coordinator watching Znode will update servers.
+	    // Start watching the internal connection
+	    this.connectionWatcherHandle = zkClient.onConnected(this::onConnected);
+
+	    // Start watching partition assignments and server descriptors
+	    this.serverWatcherHandle =
+	        zkClient.watch(serverDir, this::updateServers, partitionAssignmentSerializer, serverDescriptorSerializer);
+
+
+13. Runbook
+	ref: https://confluence.corp.wepay-inc.com/display/DI/Waltz+Runbook
+
