@@ -1,0 +1,63 @@
+Summary
+
+1. Analyzing and reporting on Cloud DLP scan findings
+	- ref: https://cloud.google.com/dlp/docs/
+		   https://cloud.google.com/dlp/docs/analyzing-and-reporting
+		   https://cloud.google.com/dlp/docs/reference/rest/
+
+
+2. Concept
+	Cloud DLP provides access to a powerful sensitive data inspection, classification, and de-identification platform.
+
+
+3. What Google DLP can do
+	1) Inspection
+		- text, file, gcs, bq, datastore
+
+	2) Create customized infoType detectors
+		- pre-defined detectors: https://cloud.google.com/dlp/docs/infotypes-reference
+
+	3) Redaction 
+		- abc@gmail.com -> [EMAIL_ADDRESS]
+
+	4) De-identification 
+		- my email is abc@gmail.com -> my email is ###@####.###
+
+	5) Risk analysis
+		- analyzing sensitive data to find properties that might increase the risk of subjects being identified
+
+	6) Scheduling Jobs
+		- we use Airflow instead
+
+	7) Deal with DLP scan result
+		store, analyst, report
+
+
+4. Wepay's requirement
+	1) Scan gcs bucket and bigquery tables regarding sensitive data -> collect result -> generate report
+
+	2) * Create customized infoType detectors?
+
+	3) * De-identification?
+
+	4) * Risk analysis?
+
+
+5. Jira sub-tasks
+	1) Spike: Investigate Cloud DLP Rest API
+
+	2) Create gcp_dlp_hook for Airflow
+
+	3) Create dlp_inspect_operator (support gcs & bq)
+
+	4) Scans gcs bucket with Airflow gcs_dlp_operator
+
+    5) Scans bigquery table with Airflow gcs_dlp_operator
+
+    6) Make Airflow dags more configurable
+
+    7) Other features
+    	- Create customized infoType detectors
+    	- Support De-identification
+    	- Support Risk analysis
+

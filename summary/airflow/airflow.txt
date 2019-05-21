@@ -93,11 +93,11 @@ Summary
 	3) de-dupe logic is wrong
 
 
-15. airflow-dag repo structure
+15. airflow-dag repo structure (access control)
 	1) elt: all elt pipeline from mysql to micro_bus
 		https://elt-airflow.corp.wepay-inc.com
 
-	2) dev: has access to GCS & BQ, but can't write data to production
+	2) dev: (an exception) has access to read micro-bus GCS & BQ, but can't write data to it (production)
 		https://dev-airflow.corp.wepay-inc.com
 
 	3) atomic_sled: house internal staging data
@@ -116,6 +116,8 @@ Summary
 	   atomic-sled => exalted-entry (tst)
 	   silver-castle => macro-gadget (stg)
 	   platinum-fortress => micro-bus (prd)
+
+	8) a user want to access gcs need to request join a group that has the access (directly assign access to user not allowed)
 
 
 16. airflow delayed load jobs
@@ -152,8 +154,13 @@ Summary
 	4) for any new table added to elt-airflow, we need to create a Devops Jira ticket, to request for select access
 		ref: https://jira.corp.wepay-inc.com/browse/DEVOPS-7831
 
+
 18. airflow 10
-	1) we added timezone support (edited)
+	1) we added timezone support
 
 	2) and datetime are changed to timestamp
+
+
+19. when the first run start according to start_date?
+	The Airflow scheduler triggers the task soon after the start_date + scheduler_interval is passed.
 

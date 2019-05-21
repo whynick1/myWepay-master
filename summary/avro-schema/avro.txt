@@ -4,10 +4,13 @@ Summary
 	ref: https://avro.apache.org/docs/1.8.1/spec.html
 	
 
-2. schema evolution
-	must follow schema evolution unless no consumer is consuming that event
-	ref: https://docs.oracle.com/cd/NOSQL/html/GettingStartedGuide/schemaevolution.html#schemaevolutionhow
+2. schema evolution merit
+	1) schema revolution rules allows check forward and backward compatibility
+	2) avro encoding is more compact
+	3) for static type programing language, enables type checking at compile time
 
+	must follow schema evolution unless no consumer is consuming that event
+	ref: https://docs.oracle.com/en/database/other-databases/nosql-database/12.2.4.5/java-driver-kv/schema-evolution.html#GUID-2E3660AD-E0BB-4BF4-AAF3-7F7DD7EFBEAC
 
 3. avro-schema repo
 	1) Conduct backwards and forward compatibility checks on all schemas

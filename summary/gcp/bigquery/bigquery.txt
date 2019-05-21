@@ -68,3 +68,25 @@ Summary
 	4) ref: https://cloud.google.com/bigquery/docs/managing-table-schemas
 	   ref: https://cloud.google.com/bigquery/docs/manually-changing-schemas#changing_a_columns_data_type
 
+
+9. How partitioned views minimize cost
+ 	1) partitioned views are created by selecting only the correct number of BigQuery partitions
+	
+	2) nder the hood, partitioned tables have a separate table for each day, and the normal view essentially queries every single table. 
+	
+	3) how we would select the last week's worth of data in a 07d view:
+		```
+		WHERE
+		_PARTITIONTIME BETWEEN TIMESTAMP(DATE_ADD(CURRENT_DATE(), INTERVAL -7 DAY))
+		AND CURRENT_TIMESTAMP()
+		```
+
+
+10. How we reflect a row been delete in BQ
+	1) since BQ is append only, we cannot delete row
+	
+	2) but when dbz catch a remove event, kcbq will handle it by adding a delete 'flag'
+
+	3) finally, in BQ view we filter out row with `d`
+
+

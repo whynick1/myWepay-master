@@ -12,3 +12,48 @@ Summary
 
 4. Support node type based allocation #205
 	ref: https://github.com/confluentinc/ducktape/pull/205
+
+5. Work Note
+	1) Now we are able to run integration test including Waltz storage and Waltz server, with ducktape using virtualbox as provider
+		see PR: https://bitbucket.devops.wepay-inc.com/projects/DI/repos/waltz/pull-requests/100/overview
+	   Now we are able to start multiple nodes (limited to Waltz storage) with ducktape using vagrant-google as provider, and successfully run a simple integration test
+		see PR: https://github.com/mitchellh/vagrant-google/pull/210/files
+
+	2) How to run the test
+		(1) Install ducktape
+		    current ducktape does not support allocate node by type, so please pull from this PR (https://github.com/confluentinc/ducktape/pull/205)
+		    then run `python setup.py install`
+		(2) Install vagrant-google plugin
+		    reference to https://github.com/mitchellh/vagrant-google
+		(3) Pull from this PR (https://bitbucket.devops.wepay-inc.com/projects/DI/repos/waltz/pull-requests/101/overview), or directly use this zipped "vagrant-google-demo" folder that contains Vagrantfile
+		(4) Update VagrantFile goole-related fields. Also reference to https://github.com/mitchellh/vagrant-google
+		    google.google_json_key_location = 
+		    override.ssh.username = 
+		    override.ssh.private_key_path = 
+		(5) Bring machines up
+		    cd [to directory contains Vagrantfile]
+		    vagrant up --provider=google --no-parallel
+
+		    (if you got error with "Permission denied @ rb_sysopen - /etc/hosts", use `chmod` to set /etc/hosts readable)
+		    (to destroy: vagrant destroy --provider=google)
+		    (to rerun provision: vagrant provision storage-998 --debug)
+		(6) Copy keystore and truststore file to right place (based on /etc/waltz-storage/config.yml)
+		    sudo cp /vagrant/keystore.jks /etc/waltz-storage/
+		    sudo cp /vagrant/truststore.jks /etc/waltz-storage/
+		(7) Run integration test
+		    ducktape waltz-test/src/main/python
+
+	3) What's next
+		DI-1760 Support allocate node by type (WIP: https://github.com/confluentinc/ducktape/pull/205)
+		DI-1761 Support additional disks mount to disk (WIP: https://github.com/mitchellh/vagrant-google/issues/102#issuecomment-443035070)
+
+	4) Tips
+		(1) Run service from remote machine, Waltz Storage as an example
+			start: `sudo systemctl start waltz-storage`
+			view status: `journalctl -u waltz-storage -e` or `sudo systemctl status waltz-server`
+			stop: `sudo systemctl stop waltz-storage` (Attention that, kill the process will not stop service, instead it will automatically bounce back)
+
+		(2) View current machine: https://console.cloud.google.com/compute/instances?project=mythic-crane-708&folder&organizationId=1076058475052&filter=%255B%257B_22k_22_3A_22_22_2C_22t_22_3A10_2C_22v_22_3A_22_5C_22hongyi_5C_22_22%257D%255D&duration=PT1H
+
+		(3) Prefer `vagrant destroy` than delete VM from google UI. Deleting through UI is faster but need manually delete disks attached to the VM.
+

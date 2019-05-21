@@ -1,0 +1,91 @@
+Summary
+
+1. Code review motivation
+	-- Committers are motivated 
+	-- Sharing knowledge
+	-- Consistency
+	-- Accidental errors (e.g., typos)
+
+
+2. Performing code review
+	1) Check purpose
+		(1) Does this code accomplish the author’s purpose? 
+			-- Every change should have a specific reason (new feature, refactor, bugfix, etc).
+		
+		(2) Ask questions.
+
+	2) Check implementation
+		(1) Think about how you would have solved the problem.
+			-- Is it shorter/easier/cleaner/faster/safer yet functionally equivalent?
+
+		(2) potential for useful abstractions? 
+			-- Partially duplicated code often indicates that a more abstract or general piece of functionality can be extracted and then reused.
+
+		(3) Think about edge case
+
+		(4) Think about libraries or existing product code
+			-- So that don't have to implement again
+
+		(5) Does the change follow standard patterns?
+			-- Naming conventions, program logic decomposition, data type definitions,
+
+		(6) Does the change add compile-time or run-time dependencies?
+			-- We want to keep our products loosely coupled, with as few dependencies as possible
+
+	3) Check legibility and style
+		(1) Think about your reading experience
+			
+		(2) Adhere to coding guidelines
+			-- Code style, API conventions, etc.
+
+		(3) Does this code have TODOs?
+
+	4) Check maintainability
+		(1) Read the tests
+			
+
+		(2) Does this CR introduce the risk of breaking test?
+
+
+		(3) Does this change break backward compatibility?
+
+
+		(4) Does this code need integration tests?
+			-- especially if the code interacts with outside systems
+
+		(5) Leave feedback on code-level documentation, comments
+			-- nit: I usually prefer 
+
+		(6) Was the external documentation updated? 
+			-- README.md
+
+		(7) Check security and authorization
+			-- weak configuration, malicious user input, missing log events, etc.
+
+
+3. How to leave commment
+	1) concise, friendly, actionable
+
+	2) suggestions
+		-- e.g. “Suggestion: extract method to improve legibility”
+
+	3) required changes
+		-- e.g. “Add @Override”
+
+	4) need discussion or clarification
+		-- e.g. “Is this really the correct behavior? If so, please add a comment explaining the logic.”
+
+	5) indicate you would like to re-review after the changes have been implemented 
+		-- e.g. “Feel free to merge after responding to the few minor suggestions” 
+		-- e.g. “Please consider my suggestions and let me know when I can take another look.”
+
+
+4. How to respond to review
+	1) Respond to every comment
+
+	2) Explain why you made certain decisions
+
+	3) Fixes should be in a separate commit
+
+	4) Avoid squashing commits during the review process
+

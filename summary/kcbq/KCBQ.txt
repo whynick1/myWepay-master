@@ -78,3 +78,19 @@ Summary
 	ref: https://oss.sonatype.org/#nexus-search;quick~kcbq
 	ref: https://mvnrepository.com/artifact/com.wepay.kcbq
 
+
+4.  how to deal with compatible schema change
+	1) delete existing table and view (be careful)
+	2) devops turn off schema change limit 
+	3) producer send a msg with new schema
+	4) re-create views
+
+
+5. how to deal with incompatible schema change
+    1) delete existing table and view (be careful)
+	2) truncate Kafka message for the topic
+	3) push new schema for that topic
+	4) re-bootstrap KCBQ
+	5) re-create views
+
+

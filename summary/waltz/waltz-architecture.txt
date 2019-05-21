@@ -164,7 +164,6 @@ Summary
        		conflict resolution to handle
 
 
-
 9. Session
 	1) Why we need to establish a session?
 		to guarantee that no two servers write to the same partition at the same time. 
@@ -181,7 +180,7 @@ Summary
 	3) When to establish a session?
 		whenever a storage node becomes unavailable, Waltz server creates a new session and runs the recovery. 
 
-		also, Waltz server start a new session periodically,  to avoid task queue get too long. 
+		also, Waltz server start a new session periodically, to avoid task queue get too long. 
 
 
 10. Recovery Procedure
